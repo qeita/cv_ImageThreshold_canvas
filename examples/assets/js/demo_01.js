@@ -20,7 +20,7 @@
   const startBtn = document.getElementById('start_btn')
   let isAudioRun = false
   let isMuted = true
-  let isSP = false
+  let isSP = true
 
   stats.showPanel( 0 )
   document.body.appendChild(stats.dom)
@@ -89,7 +89,7 @@
   if(ua.indexOf('iPhone') < 0 && ua.indexOf('Android') < 0 && ua.indexOf('Mobile') < 0 && ua.indexOf('iPad') < 0){
     frontBtn.disabled = true
     rearBtn.disabled = true
-    isSP = true
+    isSP = false
   }
 
   stopBtn.addEventListener('click', () => {
