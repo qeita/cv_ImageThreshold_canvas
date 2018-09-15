@@ -21,6 +21,10 @@
   let isAudioRun = false
   let isMuted = true
   let isSP = true
+  let intervalFrame = {
+    current: 0,
+    limit: 60
+  }
 
   stats.showPanel( 0 )
   document.body.appendChild(stats.dom)
@@ -135,22 +139,44 @@
 
     let isWhite = 0
 
-    for(let i = 0; i < src.data.length; i = i + 4){
-      let y = ~~(0.299 * src.data[i] + 0.587 * src.data[i + 1] + 0.114 * src.data[i + 2])
-      let ret = (y > threshold.value) ? 255: 0
-      dst.data[i] = dst.data[i + 1] = dst.data[i + 2] = ret
-      dst.data[i + 3] = src.data[i + 3]
-
-      isWhite += ret === 255? 1: 0 
-    }
     if(!isSP){
+      // PC
+      for(let i = 0; i < src.data.length; i = i + 4){
+        let y = ~~(0.299 * src.data[i] + 0.587 * src.data[i + 1] + 0.114 * src.data[i + 2])
+        let ret = (y > threshold.value) ? 255: 0
+        dst.data[i] = dst.data[i + 1] = dst.data[i + 2] = ret
+        dst.data[i + 3] = src.data[i + 3]
+  
+        isWhite += ret === 255? 1: 0 
+      }  
       ctx.putImageData(dst, 0, 0)
+      if(!isAudioRun) return
+      const total = canvas.width * canvas.height;
+      oscillator.frequency.value = BASE_FREQUENCY + ((isWhite / total) - 0.5) * 300
+      // console.log(oscillator.frequency.value)
+  
+    }else{
+      // SP
+      if(intervalFrame.current >= intervalFrame.limit){
+        intervalFrame.current = 0
+        for(let i = 0; i < src.data.length; i = i + 4){
+          let y = ~~(0.299 * src.data[i] + 0.587 * src.data[i + 1] + 0.114 * src.data[i + 2])
+          let ret = (y > threshold.value) ? 255: 0
+          dst.data[i] = dst.data[i + 1] = dst.data[i + 2] = ret
+          dst.data[i + 3] = src.data[i + 3]
+    
+          isWhite += ret === 255? 1: 0 
+        }  
+        if(!isAudioRun) return
+        const total = canvas.width * canvas.height;
+        oscillator.frequency.value = BASE_FREQUENCY + ((isWhite / total) - 0.5) * 300
+        // console.log(oscillator.frequency.value)
+      
+      }else{
+        intervalFrame.current++
+      }
     }
 
-    if(!isAudioRun) return
-    const total = canvas.width * canvas.height;
-    oscillator.frequency.value = BASE_FREQUENCY + ((isWhite / total) - 0.5) * 300
-    // console.log(oscillator.frequency.value)
   }
 
 
