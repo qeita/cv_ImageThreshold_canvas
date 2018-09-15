@@ -11,6 +11,7 @@
   let isLoadedMetaData = false
   let constraints = { audio: false, video: {facingMode: 'user'} }
 
+  let stats = new Stats()
   let audioContext = new (window.AudioContext || window.webkitAudioContext)()
   let oscillator = audioContext.createOscillator()
   let gain = audioContext.createGain()
@@ -19,6 +20,9 @@
   const startBtn = document.getElementById('start_btn')
   let isAudioRun = false
   let isMuted = true
+
+  stats.showPanel( 0 )
+  document.body.appendChild(stats.dom)
 
 
   oscillator.type = 'sine'
@@ -62,9 +66,11 @@
   }
 
   function draw(){
+    stats.begin()
     if(isVideoRun){
       simpleThreshold()
     }
+    stats.end()
     requestAnimationFrame( draw )
   }
 
