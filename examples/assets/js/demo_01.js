@@ -20,6 +20,7 @@
   const startBtn = document.getElementById('start_btn')
   let isAudioRun = false
   let isMuted = true
+  let isSP = false
 
   stats.showPanel( 0 )
   document.body.appendChild(stats.dom)
@@ -88,6 +89,7 @@
   if(ua.indexOf('iPhone') < 0 && ua.indexOf('Android') < 0 && ua.indexOf('Mobile') < 0 && ua.indexOf('iPad') < 0){
     frontBtn.disabled = true
     rearBtn.disabled = true
+    isSP = true
   }
 
   stopBtn.addEventListener('click', () => {
@@ -141,7 +143,9 @@
 
       isWhite += ret === 255? 1: 0 
     }
-    ctx.putImageData(dst, 0, 0)
+    if(!isSP){
+      ctx.putImageData(dst, 0, 0)
+    }
 
     if(!isAudioRun) return
     const total = canvas.width * canvas.height;
