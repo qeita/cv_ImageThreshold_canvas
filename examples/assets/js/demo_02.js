@@ -23,7 +23,7 @@
   let isSP = true
   let intervalFrame = {
     current: 0,
-    limit: 60
+    limit: 30
   }
 
   const canvas2 = document.createElement('canvas')
